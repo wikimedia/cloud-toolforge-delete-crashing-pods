@@ -1,0 +1,55 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ include "delete-crashing-pods.fullname" . }}
+  labels:
+    {{- include "delete-crashing-pods.labels" . | nindent 4 }}
+spec:
+  schedule: "{{ .Values.cronjob.schedule }}"
+  concurrencyPolicy: {{ .Values.cronjob.concurrencyPolicy }}
+  jobTemplate:
+    metadata:
+      labels:
+        {{- include "delete-crashing-pods.labels" . | nindent 8 }}
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          {{- with .Values.podAnnotations }}
+          annotations:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+          labels:
+            {{- include "delete-crashing-pods.selectorLabels" . | nindent 14 }}
+        spec:
+          restartPolicy: Never
+          serviceAccountName: {{ include "delete-crashing-pods.fullname" . }}
+          containers:
+            - name: {{ .Chart.Name }}
+              {{- with .Values.securityContext }}
+              command:
+                - /srv/app/delete-crashing-pods
+              securityContext:
+              {{- toYaml . | nindent 14 }}
+              {{- end }}
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              env:
+                - name: PROMETHEUS_URL
+                  value: "{{ .Values.prometheus.url }}"
+                - name: DEBUG
+                  value: "{{ .Values.debug }}"
+                - name: DRY_RUN
+                  value: "{{ .Values.dryRun }}"
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}

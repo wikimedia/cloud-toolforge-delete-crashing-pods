@@ -1,0 +1,20 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "delete-crashing-pods.fullname" . }}
+  labels:
+  {{- include "delete-crashing-pods.labels" . | nindent 4 }}
+rules:
+  - verbs:
+{{- include "delete-crashing-pods.rbacVerbs" }}
+    apiGroups:
+      - ""
+    resources:
+      - pods
+  - verbs:
+{{- include "delete-crashing-pods.rbacVerbs" }}
+    apiGroups:
+      - apps
+    resources:
+      - replicasets
+      - deployments

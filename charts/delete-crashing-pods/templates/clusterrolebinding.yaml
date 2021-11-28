@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "delete-crashing-pods.fullname" . }}
+  labels:
+  {{- include "delete-crashing-pods.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "delete-crashing-pods.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "delete-crashing-pods.fullname" . }}
+    namespace: {{ .Release.Namespace }}

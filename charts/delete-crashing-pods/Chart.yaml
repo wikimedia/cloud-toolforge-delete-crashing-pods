@@ -1,0 +1,6 @@
+apiVersion: v2
+name: delete-crashing-pods
+description: Cron job to delete pods that are in CrashLoopBackOff
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

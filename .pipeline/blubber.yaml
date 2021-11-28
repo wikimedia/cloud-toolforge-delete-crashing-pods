@@ -1,0 +1,13 @@
+version: v4
+
+variants:
+  build:
+    base: docker-registry.wikimedia.org/golang1.17:latest
+    apt: {packages: [gcc, git, make]}
+  test:
+    includes: [build]
+    copies: [local]
+    runs: { insecurely: true }
+    builder:
+      command: [go, install, golang.org/x/lint/golint@latest]
+    entrypoint: [make, test]
