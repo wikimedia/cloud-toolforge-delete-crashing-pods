@@ -26,30 +26,30 @@ spec:
           serviceAccountName: {{ include "delete-crashing-pods.fullname" . }}
           containers:
             - name: {{ .Chart.Name }}
-              {{- with .Values.securityContext }}
               command:
                 - /srv/app/delete-crashing-pods
+              {{- with .Values.securityContext }}
               securityContext:
-              {{- toYaml . | nindent 14 }}
+              {{- toYaml . | nindent 16 }}
               {{- end }}
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
               imagePullPolicy: {{ .Values.image.pullPolicy }}
               env:
-                - name: PROMETHEUS_URL
+                - name: PROMETHEUSURL
                   value: "{{ .Values.prometheus.url }}"
                 - name: DEBUG
                   value: "{{ .Values.debug }}"
-                - name: DRY_RUN
+                - name: DRYRUN
                   value: "{{ .Values.dryRun }}"
           {{- with .Values.nodeSelector }}
           nodeSelector:
-            {{- toYaml . | nindent 12 }}
+            {{- toYaml . | nindent 14 }}
           {{- end }}
           {{- with .Values.affinity }}
           affinity:
-            {{- toYaml . | nindent 12 }}
+            {{- toYaml . | nindent 14 }}
           {{- end }}
           {{- with .Values.tolerations }}
           tolerations:
-            {{- toYaml . | nindent 12 }}
+            {{- toYaml . | nindent 14 }}
           {{- end }}

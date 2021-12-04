@@ -51,8 +51,8 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{- define "delete-crashing-pods.rbacVerbs" -}}
-      - get
+- get
 {{- if not .Values.dryRun }}
-      - delete
+- delete
 {{- end -}}
 {{- end }}

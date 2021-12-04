@@ -6,13 +6,13 @@ metadata:
   {{- include "delete-crashing-pods.labels" . | nindent 4 }}
 rules:
   - verbs:
-{{- include "delete-crashing-pods.rbacVerbs" }}
+{{ include "delete-crashing-pods.rbacVerbs" . | nindent 6 }}
     apiGroups:
       - ""
     resources:
       - pods
   - verbs:
-{{- include "delete-crashing-pods.rbacVerbs" }}
+{{ include "delete-crashing-pods.rbacVerbs" . | nindent 6 }}
     apiGroups:
       - apps
     resources:
