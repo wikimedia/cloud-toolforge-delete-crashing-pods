@@ -26,6 +26,10 @@ type config struct {
 	Debug         bool `default:"false"`
 	DryRun        bool `default:"false"`
 	PrometheusURL string
+	SMTPServer    string `default:""`
+	SMTPPort      int    `default:"25"`
+	EmailFrom     string `default:""`
+	EmailTo       string `default:""`
 }
 
 func main() {
@@ -48,13 +52,17 @@ func main() {
 
 	var notifiers []notifier.Notifier
 
-	/*
-	TODO: implement
-	if config.EmailServer != nil {
-		notifiers = append(notifiers, notifier.EmailNotifier{
-		})
+	if config.SMTPServer != "" {
+		emailNotifier := notifier.EmailNotifier{
+			SMTPServer:  config.SMTPServer,
+			SMTPPort:    config.SMTPPort,
+			FromAddress: config.EmailFrom,
+			ToDomain:    config.EmailTo,
+		}
+
+		notifiers = append(notifiers, emailNotifier)
+		logrus.Debugf("Created email notifier %v", emailNotifier)
 	}
-	*/
 
 	crashLocator := locator.PrometheusCrashLocator{
 		PrometheusURL: config.PrometheusURL,
@@ -74,7 +82,7 @@ func main() {
 			continue
 		}
 
-		if pod.Days == 7 {
+		if pod.Days == 4 {
 			logrus.Infof("Removing pod %v/%v", pod.Namespace, pod.Pod)
 
 			err := kubernetes.RemovePod(pod)
@@ -85,7 +93,10 @@ func main() {
 
 			if !config.DryRun {
 				for _, not := range notifiers {
-					not.TellMaintainersAboutDeath(pod)
+					err := not.TellMaintainersAboutDeath(pod)
+					if err != nil {
+						logrus.Errorln("Failed to notify maintainers", err)
+					}
 				}
 			}
 		} else if pod.Days == 5 {
@@ -93,7 +104,10 @@ func main() {
 
 			if !config.DryRun {
 				for _, not := range notifiers {
-					not.SendWarningToMaintainers(pod)
+					err := not.SendWarningToMaintainers(pod)
+					if err != nil {
+						logrus.Errorln("Failed to notify maintainers", err)
+					}
 				}
 			}
 		}

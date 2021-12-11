@@ -10,6 +10,12 @@ image:
 prometheus:
   url: "https://prometheus.example.com"
 
+email:
+  server: ""
+  port: 25
+  fromAddress: ""
+  toDomain: ""
+
 debug: false
 dryRun: false
 

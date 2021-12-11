@@ -18,6 +18,6 @@ import "gerrit.wikimedia.org/r/cloud/toolforge/delete-crashing-pods/pkg/core"
 
 // Notifier sends some sort of notifications about killed pods
 type Notifier interface {
-	SendWarningToMaintainers(pod core.CrashingPod)
-	TellMaintainersAboutDeath(pod core.CrashingPod)
+	SendWarningToMaintainers(pod core.CrashingPod) error
+	TellMaintainersAboutDeath(pod core.CrashingPod) error
 }

@@ -28,7 +28,7 @@ import (
 var (
 	errorWrongType = errors.New("got back wrong value type")
 
-	query = "count_over_time((sum(rate(kube_pod_container_status_restarts_total{namespace=~\"tool-[a-z0-9\\\\-]+\"}[60m])) by (namespace, pod) > 0.002)[7d:1d]) > 4"
+	query = "count_over_time((sum(rate(kube_pod_container_status_restarts_total{namespace=~\"tool-[a-z0-9\\\\-]+\"}[60m])) by (namespace, pod) > 0.002)[7d:1d]) >= 4"
 )
 
 // PrometheusCrashLocator finds crashing pods from Prometheus

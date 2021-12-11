@@ -41,6 +41,14 @@ spec:
                   value: "{{ .Values.debug }}"
                 - name: DRYRUN
                   value: "{{ .Values.dryRun }}"
+                - name: SMTPSERVER
+                  value: "{{ .Values.email.server }}"
+                - name: SMTPPORT
+                  value: "{{ .Values.email.port }}"
+                - name: EMAILFROM
+                  value: "{{ .Values.email.fromAddress }}"
+                - name: EMAILTO
+                  value: "{{ .Values.email.toDomain }}"
           {{- with .Values.nodeSelector }}
           nodeSelector:
             {{- toYaml . | nindent 14 }}
