@@ -31,16 +31,15 @@ type EmailNotifier struct {
 
 func (n EmailNotifier) sendMailToMaintainers(pod core.CrashingPod, subject string, content string) error {
 	toolName := strings.Replace(pod.Namespace, "tool-", "", 1)
+	toAddress := fmt.Sprintf("%v.maintainers@%v", toolName, n.ToDomain)
 
-	body := fmt.Sprintf("From: %v\r\nSubject: %v\r\n\r\n%v", n.FromAddress, subject, content)
+	body := fmt.Sprintf("From: %v\r\nTo: %v\r\nSubject: %v\r\n\r\n%v", n.FromAddress, toAddress, subject, content)
 
 	return smtp.SendMail(
 		fmt.Sprintf("%v:%v", n.SMTPServer, n.SMTPPort),
 		nil,
 		n.FromAddress,
-		[]string{
-			fmt.Sprintf("%v.maintainers@%v", toolName, n.ToDomain),
-		},
+		[]string{ toAddress },
 		[]byte(body),
 	)
 }
