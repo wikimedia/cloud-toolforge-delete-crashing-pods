@@ -82,7 +82,7 @@ func main() {
 			continue
 		}
 
-		if pod.Days == 4 {
+		if pod.Days == 7 {
 			logrus.Infof("Removing pod %v/%v", pod.Namespace, pod.Pod)
 
 			err := kubernetes.RemovePod(pod)
@@ -99,7 +99,7 @@ func main() {
 					}
 				}
 			}
-		} else if pod.Days == 5 {
+		} else if pod.Days == 4 {
 			logrus.Infof("Warning maintainers of %v/%v about immiment death", pod.Namespace, pod.Pod)
 
 			if !config.DryRun {
